@@ -33,8 +33,9 @@ class PostingServiceTest {
 
         Posting post = new Posting();
         String content = "안녕하세요 오늘은 테스트입니다";
+        String title = "안녕하세요 테스트 제목임";
         Long userIdx = userT.getIdx();
-        Posting create_post = postingService.create(userIdx, content);
+        Posting create_post = postingService.create(userIdx, content, title);
         Posting save_post = postingService.save(create_post);
 
 
