@@ -45,8 +45,8 @@ class CommunityUserServiceTest {
         CommunityUser userC = userRepository.save(user);
         Optional<CommunityUser> userT = userRepository.findById(Long.valueOf(testIdx));
 
-        assertEquals(nickname, userT.get().getNickname());
-        assertEquals(testIdx, userT.get().getIdx());
+        assertEquals(userC.getNickname(), userT.get().getNickname());
+        assertEquals(userC.getIdx(), userT.get().getIdx());
     }
 
 
