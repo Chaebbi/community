@@ -6,7 +6,13 @@ import com.chaebbi.community.domain.Posting;
 import com.chaebbi.community.service.ImagesService;
 import com.chaebbi.community.service.PostingService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +36,11 @@ public class PostingApiController {
     /**
      * [Post] 31-1 게시글 작성 API
      */
-    @Operation(summary = "31-1 게시글 작성 ", description = "게시글 작성  API")
+    @ApiOperation(value = "[POST] 31-1 게시글 작성 ", notes = "제목, 글내용, 이미지들을 넣어 게시글을 등록합니다")
     @PostMapping("/posting/{userIdx}")
     public ResponseEntity<Void> uploadPost(@PathVariable(value = "userIdx") Long userIdx,
-                                           @RequestPart (value= "multipartFileList", required = false) List<MultipartFile> multipartFileList,
-                                           @RequestPart(value="posting") PostingDto postingDto ) throws IOException {
+                                           @ApiParam(value = "이미지파일 리스트") @RequestPart (value= "multipartFileList", required = false) List<MultipartFile> multipartFileList,
+                                           @ApiParam(value = "게시글 제목과 내용 dto") @RequestPart(value="posting") PostingDto postingDto ) throws IOException {
 
         Posting post = new Posting();
         post = postingService.create(userIdx, postingDto.content, postingDto.title);
@@ -61,7 +67,9 @@ public class PostingApiController {
 
     @Data
     static class PostingDto {
+        @ApiModelProperty(value = "게시글 제목")
         private String title;
+        @ApiModelProperty(value = "게시글 내용")
         private String content;
     }
 }
