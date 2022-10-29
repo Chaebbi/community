@@ -18,15 +18,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().httpBasic().disable()
+      http.cors().and().httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/v3/api-docs/**").permitAll();
+        /*.anyRequest().authenticated();*/
 
     }
 }
