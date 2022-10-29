@@ -17,7 +17,7 @@ public class Posting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    private int userIdx;
+    private Long userIdx;
 
     private String content;
 
