@@ -15,11 +15,13 @@ import java.sql.Timestamp;
 public class Posting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idx;
+    private Long idx;
 
     private int userIdx;
 
     private String content;
 
     private Timestamp createdAt;
+
+
 }

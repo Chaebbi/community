@@ -13,7 +13,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class CommunityUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idx;
+    private Long idx;
     private String nickname;
 }
