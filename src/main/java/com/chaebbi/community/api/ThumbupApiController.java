@@ -6,67 +6,51 @@ import com.chaebbi.community.dto.request.PostThumbupReqDto;
 import com.chaebbi.community.dto.response.PostThumbupResDto;
 import com.chaebbi.community.dto.response.StringResponseDto;
 import com.chaebbi.community.service.ThumbupService;
+import com.chaebbi.community.validation.ThumbupValidationController;
+import com.chaebbi.community.validation.UserValidationController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = "Thumbup API", description = "좋아요 API")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/thumbup")
 public class ThumbupApiController {
     private final ThumbupService thumbupService;
 
-    /*
-    좋아요 등록 API
-    [POST] /api/thumbup/:userIdx
+    private final UserValidationController userValidationController;
+    private final ThumbupValidationController thumbupValidationController;
+
+    /**
+     * [Post] 41-1 좋아요 등록 API
+     * /thumbup/:userIdx
      */
-    @PostMapping("/api/thumbup/{userIdx}")
+    @ApiOperation(value = "[POST] 41-1 좋아요 등록 ", notes = "userIdx와 postIdx를 넣어 좋아요를 등록합니다")
+    @PostMapping("/{userIdx}")
     public ResponseEntity<?> createThumbup(@PathVariable(value = "userIdx", required = false) int userIdx, @RequestBody PostThumbupReqDto request) {
-        /*
-        if(String.valueOf(userIdx).isEmpty() || String.valueOf(userIdx).equals("")) {
-            return new BaseResponse<>(EMPTY_USERIDX);
-        }
-        CUser user = cuserService.findOne(userIdx); 유저 관련 생기면 다시 하기
-        if(user == null) {
-            return new BaseResponse<>(INVALID_USER);
-        }
-
-        if(String.valueOf(request.getPostIdx()).isEmpty() || String.valueOf(request.getPostIdx()).equals("")) {
-            return new BaseResponse<>(EMPTY_POSTIDX);
-        }
-
-         게시글 관련 생기면 존재하지 않는 게시글입니다. validation 처리
-        */
+        //validation 로직
+        userValidationController.validateuser((long) userIdx);
+        thumbupValidationController.validatePost(request.getPostIdx());
 
         Thumbup thumbup = Thumbup.createThumbup(userIdx, request.getPostIdx());
         int thumbupIdx = thumbupService.createThumbup(thumbup);
         return ResponseEntity.ok().body(new PostThumbupResDto(thumbupIdx));
     }
 
-    /*
-    좋아요 삭제 API
-    [DELETE] /api/thumbup/:userIdx
+    /**
+     * [Delete] 41-2 좋아요 삭제 API
+     * /thumbup/:userIdx
      */
-    @DeleteMapping("/api/thumbup/{userIdx}")
+    @ApiOperation(value = "[POST] 41-2 좋아요 삭제 ", notes = "userIdx와 postIdx를 넣어 좋아요를 삭제합니다")
+    @DeleteMapping("/{userIdx}")
     public ResponseEntity<?> deleteThumbup(@PathVariable(value = "userIdx", required = false) int userIdx, @RequestBody DeleteThumbupReqDto request) {
-        /*
-        if(String.valueOf(userIdx).isEmpty() || String.valueOf(userIdx).equals("")) {
-            return new BaseResponse<>(EMPTY_USERIDX);
-        }
-        CUser user = cuserService.findOne(userIdx); 유저 관련 생기면 다시 하기
-        if(user == null) {
-            return new BaseResponse<>(INVALID_USER);
-        }
-
-        if(String.valueOf(request.getPostIdx()).isEmpty() || String.valueOf(request.getPostIdx()).equals("")) {
-            return new BaseResponse<>(EMPTY_POSTIDX);
-        }
-
-         게시글 관련 생기면 존재하지 않는 게시글입니다. validation 처리
-
-         if(thumbupService.checkThumbup(userIdx, postIdx) == 0) {
-            return new BaseResponse<>(INVALID_THUMBUP); 유효하지 않은 좋아요
-        }
-        */
+        //validation 로직
+        userValidationController.validateuser((long) userIdx);
+        thumbupValidationController.validatePost(request.getPostIdx());
+        thumbupValidationController.validateDeleteThumbup(userIdx, request);
 
         thumbupService.deleteThumbup(userIdx, request.getPostIdx());
         return ResponseEntity.ok().body(new StringResponseDto("삭제되었습니다."));

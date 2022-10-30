@@ -6,11 +6,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = false)
 @RequiredArgsConstructor
 public class ThumbupService {
     private final ThumbupRepository thumbupRepository;
+
+    public Long checkThumbup(int userIdx, int postIdx) {
+        return thumbupRepository.checkThumbup(userIdx, postIdx);
+    }
 
     @Transactional
     public int createThumbup(Thumbup thumbup) {
