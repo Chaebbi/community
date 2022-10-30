@@ -19,7 +19,7 @@ public class CommunityUserService {
         return userRepository.save(user);
     }
 
-    public Optional<CommunityUser> findById(Long userIdx) { return userRepository.findById(userIdx); }
-
+    //public Optional<CommunityUser> findById(Long userIdx) { return userRepository.findById(userIdx); }
+    public Optional<CommunityUser> findByUserIdx(Long userIdx) { return userRepository.findByUserIdx(userIdx); }
 
 }

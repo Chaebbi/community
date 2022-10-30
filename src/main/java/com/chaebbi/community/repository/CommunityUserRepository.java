@@ -6,12 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.Optional;
 
 @Repository
 
 public interface CommunityUserRepository extends JpaRepository<CommunityUser, Long> {
 
-    //private final EntityManager em;
+    Optional<CommunityUser> findByUserIdx(Long userIdx);
+
 
 
 
