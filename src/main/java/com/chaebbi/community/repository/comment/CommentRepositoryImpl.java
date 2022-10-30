@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class CommentRepositoryImpl implements CommentRepositoryCustom {
@@ -23,4 +24,13 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .setParameter("userIdx", userIdx)
                 .getResultList();
     }
+
+    @Override
+    public Long checkComment(int commentIdx) {
+        return (Long) em.createQuery("select count(c.idx) from Comment c where c.idx = :idx")
+                .setParameter("idx", commentIdx)
+                .getSingleResult();
+    }
+
+
 }

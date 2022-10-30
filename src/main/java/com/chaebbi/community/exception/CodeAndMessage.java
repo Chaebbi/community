@@ -16,6 +16,13 @@ public enum CodeAndMessage {
     EMPTY_TITLE("1101", "게시글 제목이 비어있습니다"),
     INVALID_POST_ID("1102", "유효하지 않은 postIdx 입니다."),
 
+    // 댓글 관련 1300 ~
+    COMMENT_NO_CONTENT("1300", "댓글 내용이 비어있습니다."),
+    COMMENT_LONG_CONTENT("1301", "댓글 내용이 너무 깁니다."),
+    INVALID_COMMENT("1302", "유효하지 않은 comment 입니다."),
+
+    // 좋아요 관련 1400 ~
+    INVALID_THUMBUP("1400", "유효하지 않은 thumbup 입니다."),
 
     // S3 Util
     FILE_CONVERT_ERROR("1200", "파일 변환에 실패했습니다."),
