@@ -38,6 +38,5 @@ class PostingServiceTest {
         Posting create_post = postingService.create(userIdx, content, title);
         Posting save_post = postingService.save(create_post);
 
-
     }
 }
