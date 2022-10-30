@@ -20,8 +20,9 @@ public class Posting {
     private Long userIdx;
 
     private String content;
-
+    private String title;
     private Timestamp createdAt;
+
 
 
 }

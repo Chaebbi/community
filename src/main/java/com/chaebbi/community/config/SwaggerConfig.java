@@ -26,7 +26,7 @@ public class SwaggerConfig {
                 .securitySchemes(Arrays.asList(apiKey()))
                 .useDefaultResponseMessages(true)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ae.chaebbiSpring.api"))
+                .apis(RequestHandlerSelectors.basePackage("com.chaebbi.community.api"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());

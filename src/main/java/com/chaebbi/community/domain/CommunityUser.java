@@ -15,4 +15,5 @@ public class CommunityUser {
     @Id
     private Long idx;
     private String nickname;
+    private Long userIdx;
 }

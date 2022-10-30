@@ -16,7 +16,7 @@ public class Images {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    private int postIdx;
+    private Long postIdx;
     private String imgUrl;
     private int imgRank;
 }
