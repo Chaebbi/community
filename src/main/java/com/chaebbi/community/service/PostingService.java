@@ -12,6 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostingService {
     private final PostingRepository postingRepository;
+    private final ImagesService imagesService;
 
     public Posting save(Posting post) {  return postingRepository.save(post); }
 
@@ -28,6 +29,7 @@ public class PostingService {
 
 
     public void deletePost(Long postIdx) {
+        imagesService.deleteByPostIdx(postIdx);
         postingRepository.deleteByIdx(postIdx);
     }
 }

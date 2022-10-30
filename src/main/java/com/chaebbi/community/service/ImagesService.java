@@ -31,6 +31,7 @@ public class ImagesService {
     }
 
 
-
-
+    public void deleteByPostIdx(Long postIdx) {
+        imagesRepository.deleteByPostIdx(postIdx);
+    }
 }
