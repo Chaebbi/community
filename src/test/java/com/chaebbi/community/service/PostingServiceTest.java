@@ -6,8 +6,11 @@ import com.chaebbi.community.repository.PostingRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 @WebAppConfiguration
@@ -37,6 +40,24 @@ class PostingServiceTest {
         Long userIdx = userT.getIdx();
         Posting create_post = postingService.create(userIdx, content, title);
         Posting save_post = postingService.save(create_post);
+
+    }
+
+    @Test
+    void 포스트삭제() {
+        CommunityUser user = new CommunityUser();
+        String nickname = "dr.김";
+        user.setNickname(nickname);
+        user.setIdx(13L);
+        CommunityUser userT = userService.save(user);
+
+        Posting create_post = postingService.create(userT.getIdx(), "new post", "new post title");
+        Posting save_post =postingService.save(create_post);
+
+        Long postIdx = save_post.getIdx();
+        postingService.deletePost(postIdx);
+        Optional<Posting> delPost = postingService.findById(postIdx);
+        assertEquals(delPost, Optional.<Posting>empty());
 
     }
 }

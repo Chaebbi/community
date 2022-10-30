@@ -74,5 +74,26 @@ public class PostingApiController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * [Delete] 31-2 게시글 삭제 API
+     *
+     */
+    @ApiOperation(value = "[POST] 31-2 게시글 삭제 ", notes = "게시글 id로 게시글을 삭제합니다")
+    @DeleteMapping ("/{userIdx}/{postIdx}")
+    public ResponseEntity<Void> deletePost(@PathVariable (value = "userIdx") Long userIdx,
+                                           @PathVariable (value = "postIdx") Long postIdx
+                                           ){
+        log.info("Delete 31-2 /posting/{userIdx}/{postIdx}");
+        //validation 로직
+        userValidationController.validateuser(userIdx);
+        postValidationController.validateDeletePost(postIdx);
+
+        postingService.deletePost(postIdx);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+
 
 }

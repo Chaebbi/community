@@ -27,4 +27,7 @@ public class PostingService {
     public Optional<Posting> findById(Long postIdx) {return  postingRepository.findById(postIdx); }
 
 
+    public void deletePost(Long postIdx) {
+        postingRepository.deleteByIdx(postIdx);
+    }
 }

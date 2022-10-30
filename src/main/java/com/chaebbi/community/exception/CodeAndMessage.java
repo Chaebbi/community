@@ -14,10 +14,13 @@ public enum CodeAndMessage {
     // 게시글 관련 1100 ~
     EMPTY_CONTENT("1100", "게시글 내용이 비어있습니다"),
     EMPTY_TITLE("1101", "게시글 제목이 비어있습니다"),
+    INVALID_POST_ID("1102", "유효하지 않은 postIdx 입니다."),
+
 
     // S3 Util
     FILE_CONVERT_ERROR("1200", "파일 변환에 실패했습니다."),
     FILE_EXTENSION_ERROR("1201", "파일 확장자 인식에 실패했습니다.");
+
 
 
     private final String code;
