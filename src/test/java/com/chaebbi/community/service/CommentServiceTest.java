@@ -57,7 +57,10 @@ public class CommentServiceTest {
         comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         // when
-        commentService.createComment(comment);
+        int id = commentService.createComment(comment);
+
+        // then
+        Assertions.assertEquals(id, comment.getIdx());
     }
 
     @Test
@@ -85,6 +88,9 @@ public class CommentServiceTest {
 
         // when
         commentService.deleteComment(userT.getIdx().intValue(), comment.getIdx());
+
+        // then
+        // deleteComment는 반환값이 void이기 생략
     }
 
     @Test

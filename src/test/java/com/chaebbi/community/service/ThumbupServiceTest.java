@@ -3,6 +3,7 @@ package com.chaebbi.community.service;
 import com.chaebbi.community.domain.CommunityUser;
 import com.chaebbi.community.domain.Posting;
 import com.chaebbi.community.domain.Thumbup;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,7 +42,10 @@ public class ThumbupServiceTest {
         Thumbup thumbup = Thumbup.createThumbup(userT.getIdx().intValue(), save_post.getIdx().intValue());
 
         // when
-        thumbupService.createThumbup(thumbup);
+        int id = thumbupService.createThumbup(thumbup);
+
+        // then
+        Assertions.assertEquals(id, thumbup.getIdx());
     }
 
     @Test
@@ -65,5 +69,8 @@ public class ThumbupServiceTest {
 
         // when
         thumbupService.deleteThumbup(userT.getIdx().intValue(), save_post.getIdx().intValue());
+
+        // then
+        // deleteThumbup은 반환값이 void이기 때문에 생략
     }
 }
