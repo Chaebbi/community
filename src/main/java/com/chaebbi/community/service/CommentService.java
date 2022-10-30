@@ -1,8 +1,7 @@
 package com.chaebbi.community.service;
 
 import com.chaebbi.community.domain.Comment;
-import com.chaebbi.community.dto.response.GetCommentResDto;
-import com.chaebbi.community.repository.CommentRepository;
+import com.chaebbi.community.repository.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
