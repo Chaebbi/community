@@ -8,6 +8,10 @@ import com.chaebbi.community.dto.response.PostCommentResDto;
 import com.chaebbi.community.dto.response.ResponseDto;
 import com.chaebbi.community.dto.response.StringResponseDto;
 import com.chaebbi.community.service.CommentService;
+import com.chaebbi.community.validation.CommentValidationController;
+import com.chaebbi.community.validation.UserValidationController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,88 +21,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Api(tags = "Comment API", description = "댓글 API")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/comment")
 public class CommentApiController {
     private final CommentService commentService;
     //private final CUserService cuserService;
 
-    /*
-    댓글 작성 API
-    [POST] /api/comment/:userIdx
+    private final UserValidationController userValidationController;
+    private final CommentValidationController commentValidationController;
+
+    /**
+     * [Post] 40-1 댓글 작성 API
+     * /comment/:userIdx
      */
-    @PostMapping("/api/comment/{userIdx}")
+    @ApiOperation(value = "[POST] 40-1 댓글 작성 ", notes = "postIdx, 댓글 내용을 넣어 댓글을 등록합니다")
+    @PostMapping("/{userIdx}")
     public ResponseEntity<?> createComment(@PathVariable(value = "userIdx", required = false) int userIdx, @RequestBody PostCommentReqDto request) {
-        /*
-        if(String.valueOf(userIdx).isEmpty() || String.valueOf(userIdx).equals("")) {
-            return new BaseResponse<>(EMPTY_USERIDX);
-        }
-        CUser user = cuserService.findOne(userIdx); 유저 관련 생기면 다시 하기
-        if(user == null) {
-            return new BaseResponse<>(INVALID_USER);
-        }
-
-        if(String.valueOf(request.getPostIdx()).isEmpty() || String.valueOf(request.getPostIdx()).equals("")) {
-            return new BaseResponse<>(EMPTY_POSTIDX);
-        }
-
-         게시글 관련 생기면 존재하지 않는 게시글입니다. validation 처리
-
-        if(request.getContent().isEmpty() || request.getContent().equals("")) {
-            return new BaseResponse<>(POST_COMMENT_NO_CONTENT);
-        }
-
-        if(request.getContent().length() > 200) {
-            return new BaseResponse<>(POST_COMMENT_LONG_CONTENT);
-        } */
+        //validation 로직
+        userValidationController.validateuser((long) userIdx);
+        commentValidationController.validateComment(request);
 
         Comment comment = Comment.createComment(userIdx, request.getPostIdx(), request.getContent());
         int commentIdx = commentService.createComment(comment);
         return ResponseEntity.ok().body(new PostCommentResDto(commentIdx));
     }
 
-    /*
-    댓글 삭제 API
-    [DELETE] /api/comment/:userIdx
+    /**
+     * [Delete] 40-2 댓글 삭제 API
+     * /comment/:userIdx
      */
-    @DeleteMapping("/api/comment/{userIdx}")
+    @ApiOperation(value = "[DELETE] 40-2 댓글 삭제 ", notes = "commentIdx를 넣어 댓글을 삭제합니다")
+    @DeleteMapping("/{userIdx}")
     public ResponseEntity<?> deleteComment(@PathVariable(value = "userIdx", required = false) int userIdx, @RequestBody DeleteCommentReqDto request) {
-        /*
-        if(String.valueOf(userIdx).isEmpty() || String.valueOf(userIdx).equals("")) {
-            return new BaseResponse<>(EMPTY_USERIDX);
-        }
-        CUser user = cuserService.findOne(userIdx); 유저 관련 생기면 다시 하기
-        if(user == null) {
-            return new BaseResponse<>(INVALID_USER);
-        }
+        //validation 로직
+        userValidationController.validateuser((long) userIdx);
+        commentValidationController.validateDeleteComment(request);
 
-        if(String.valueOf(request.getCommentIdx()).isEmpty() || String.valueOf(request.getCommentIdx()).equals("")) {
-            return new BaseResponse<>(EMPTY_COMMENTIDX);
-        }
-
-        if(commentService.checkComment(userIdx, commentIdx) == 0) {
-            return new BaseResponse<>(INVALID_COMMENT); 유효하지 않은 댓글
-        }
-         */
         commentService.deleteComment(userIdx, request.getCommentIdx());
         return ResponseEntity.ok().body(new StringResponseDto("삭제되었습니다."));
     }
 
-    /*
-    내가 쓴 댓글 조회 API
-    [GET]  /api/comment/:userIdx
+    /**
+     * [Get] 40-3 내가 쓴 댓글 조회 API
+     * /comment/:userIdx
      */
-    @GetMapping("/api/comment/{userIdx}")
+    @ApiOperation(value = "[GET] 40-3 내가 쓴 댓글 조회 ", notes = "userIdx를 넣어 내가 쓴 댓글을 조회합니다")
+
+    @GetMapping("/{userIdx}")
     public ResponseEntity<?> getComment(@PathVariable(value = "userIdx", required = false) int userIdx) {
-        /*
-        if(String.valueOf(userIdx).isEmpty() || String.valueOf(userIdx).equals("")) {
-            return new BaseResponse<>(EMPTY_USERIDX);
-        }
-        CUser user = cuserService.findOne(userIdx); 유저 관련 생기면 다시 하기
-        if(user == null) {
-            return new BaseResponse<>(INVALID_USER);
-        }
-         */
+        //validation 로직
+        userValidationController.validateuser((long) userIdx);
+
         List<Comment> getComments = commentService.getComment(userIdx);
         List<GetCommentResDto> getCommentRes = new ArrayList<>();
 
@@ -106,6 +81,6 @@ public class CommentApiController {
             getCommentRes.add(new GetCommentResDto(comment.getIdx(), comment.getContent(), new SimpleDateFormat("yyyy.MM.dd HH:mm").format(comment.getCreatedAt()), comment.getPostIdx()));
         }
 
-        return ResponseEntity.ok().body(new ResponseDto<>(getCommentRes));
+        return ResponseEntity.ok().body(getCommentRes);
     }
 }
