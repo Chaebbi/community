@@ -1,7 +1,7 @@
 package com.chaebbi.community.service;
 
 import com.chaebbi.community.domain.Thumbup;
-import com.chaebbi.community.repository.ThumbupRepository;
+import com.chaebbi.community.repository.thumbup.ThumbupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
