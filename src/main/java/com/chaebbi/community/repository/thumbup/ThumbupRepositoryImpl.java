@@ -26,4 +26,5 @@ public class ThumbupRepositoryImpl implements ThumbupRepositoryCustom {
                 .getSingleResult();
     }
 
+
 }

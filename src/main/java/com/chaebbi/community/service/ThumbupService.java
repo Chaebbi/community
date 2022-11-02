@@ -28,4 +28,6 @@ public class ThumbupService {
     public void deleteThumbup(int userIdx, int postIdx) {
         thumbupRepository.deleteThumbup(userIdx, postIdx);
     }
+
+
 }

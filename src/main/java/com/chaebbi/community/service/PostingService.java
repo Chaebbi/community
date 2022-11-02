@@ -38,7 +38,7 @@ public class PostingService {
         Long postIdx = post.getIdx();
         post.setContent(content);
         post.setTitle(title);
-        post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        //post.setCreatedAt(new Timestamp(System.currentTimeMillis())); 수정일자를 보일지 작성일자를 보일지 고민
 
         postingRepository.save(post);
         return post;
