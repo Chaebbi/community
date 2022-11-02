@@ -1,13 +1,19 @@
 package com.chaebbi.community.api;
 
 import com.chaebbi.community.aws.S3Uploader;
+import com.chaebbi.community.domain.Comment;
+import com.chaebbi.community.domain.CommunityUser;
 import com.chaebbi.community.domain.Images;
 import com.chaebbi.community.domain.Posting;
 import com.chaebbi.community.dto.request.PostingDto;
+import com.chaebbi.community.dto.request.UpdatePostDto;
+import com.chaebbi.community.dto.response.CommentsListDto;
+import com.chaebbi.community.dto.response.ImagesListDto;
+import com.chaebbi.community.dto.response.PostDetailDto;
 import com.chaebbi.community.exception.ExceptionController;
 import com.chaebbi.community.exception.chaebbiException;
-import com.chaebbi.community.service.ImagesService;
-import com.chaebbi.community.service.PostingService;
+import com.chaebbi.community.service.*;
+import com.chaebbi.community.validation.ImageValidationController;
 import com.chaebbi.community.validation.PostValidationController;
 import com.chaebbi.community.validation.UserValidationController;
 import io.swagger.annotations.Api;
@@ -22,7 +28,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.chaebbi.community.exception.CodeAndMessage.*;
 
@@ -37,6 +48,9 @@ public class PostingApiController {
     private final S3Uploader s3Uploader;
     private final UserValidationController userValidationController;
     private final PostValidationController postValidationController;
+    private final ThumbupService thumbupService;
+    private final CommentService commentService;
+    private final CommunityUserService userService;
     /**
      * [Post] 31-1 게시글 작성 API
      */
@@ -47,9 +61,9 @@ public class PostingApiController {
                                            @ApiParam(value = "게시글 제목과 내용 dto") @RequestPart(value="posting") PostingDto postingDto ) throws IOException {
 
         log.info("POST 31-1 /posting/{userIdx}");
-        //validation 로직
+
         userValidationController.validateuser(userIdx);
-        postValidationController.validationPost(postingDto);
+        postValidationController.validationPost(postingDto.getContent(), postingDto.getTitle());
 
         Posting post = new Posting();
         post = postingService.create(userIdx, postingDto.getContent(), postingDto.getTitle());
@@ -76,7 +90,6 @@ public class PostingApiController {
 
     /**
      * [Delete] 31-2 게시글 삭제 API
-     *
      */
     @ApiOperation(value = "[POST] 31-2 게시글 삭제 ", notes = "게시글 id로 게시글을 삭제합니다")
     @DeleteMapping ("/{userIdx}/{postIdx}")
@@ -84,7 +97,7 @@ public class PostingApiController {
                                            @PathVariable (value = "postIdx") Long postIdx
                                            ){
         log.info("Delete 31-2 /posting/{userIdx}/{postIdx}");
-        //validation 로직
+
         userValidationController.validateuser(userIdx);
         postValidationController.validateDeletePost(postIdx);
 
@@ -92,6 +105,56 @@ public class PostingApiController {
 
         return ResponseEntity.ok().build();
     }
+
+
+
+    /**
+     * [Post] 31-3 게시글 수정 API
+     * */
+    @ApiOperation(value = "[POST] 31-3 게시글 수정 ", notes = "게시글 id로 게시글의 제목과 내용을 수정합니다.")
+    @PostMapping("/update/{userIdx}/{postIdx}")
+    public ResponseEntity<Void> updatePost(@PathVariable (value = "userIdx") Long userIdx,
+                                           @PathVariable (value = "postIdx") Long postIdx,
+                                           @ApiParam(value = "수정할 게시글 제목과 내용 dto") @RequestBody UpdatePostDto updatePostDto) {
+        log.info("Post 31-3 /posting/update/{userIdx}/{postIdx}");
+
+        userValidationController.validateuser(userIdx);
+        postValidationController.validationPost(updatePostDto.getContent(), updatePostDto.getTitle());
+        Posting targetPost = postValidationController.validationPostExist(postIdx);
+
+        postingService.update(targetPost, updatePostDto.getContent(), updatePostDto.getTitle());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * [Get] 31-4 게시글 전체  목록 조회 API
+     * */
+
+    /**
+     * [Get] 31-5 게시글 상세 1개 조회 API
+     * */
+    @ApiOperation(value = "[GET] 31-5 게시글 상세 1개 조회  ", notes = "게시글 id로 게시글의 상세내용을 조회 합니다.")
+    @GetMapping("/post/{userIdx}/{postIdx}")
+    public ResponseEntity<PostDetailDto> detailPost(@PathVariable (value = "userIdx") Long userIdx,
+                                                    @PathVariable (value = "postIdx") Long postIdx
+                                                    ) {
+        log.info("Post 31-3 /posting/update/{userIdx}/{postIdx}");
+
+        CommunityUser user = userValidationController.validateuser(userIdx);
+        Posting post = postValidationController.validationPostExist(postIdx);
+        List<Images> imageList = imagesService.findByPostIdx(postIdx);
+
+        PostDetailDto postDetailDto = postingService.detailPost(postIdx, post, imageList);
+
+
+        return ResponseEntity.ok().body(postDetailDto);
+    }
+
+
+    /**
+     * [Get] 31-6 내가 쓴 게시글 조회 API
+     * */
 
 
 

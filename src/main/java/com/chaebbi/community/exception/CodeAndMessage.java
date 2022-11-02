@@ -16,6 +16,10 @@ public enum CodeAndMessage {
     EMPTY_TITLE("1101", "게시글 제목이 비어있습니다"),
     INVALID_POST_ID("1102", "유효하지 않은 postIdx 입니다."),
 
+    // 이미지 관련 1200 ~
+    NO_MATCHING_IMAGES("1200", "imagesIdx에 해당하는 것이 없습니다."),
+    EMPTY_MULTIPARTFILE("1201", "이미지 파일이 비었습니다"),
+
     // 댓글 관련 1300 ~
     COMMENT_NO_CONTENT("1300", "댓글 내용이 비어있습니다."),
     COMMENT_LONG_CONTENT("1301", "댓글 내용이 너무 깁니다."),

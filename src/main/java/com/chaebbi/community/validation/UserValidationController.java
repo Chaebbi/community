@@ -14,10 +14,10 @@ import static com.chaebbi.community.exception.CodeAndMessage.*;
 @RequiredArgsConstructor
 public class UserValidationController {
     private final CommunityUserService communityUserService;
-    public void validateuser(Long userIdx) {
-        //if(userIdx == null) throw new chaebbiException(EMPTY_PATHVARIABLE_USERID);  // pathvariable로 있으면 null 이 불가능으므로 코드 무효화시키겠음
+    public CommunityUser validateuser(Long userIdx) {
         Optional<CommunityUser> user = communityUserService.findByUserIdx(userIdx);
         if (user == Optional.<CommunityUser>empty()) throw new chaebbiException(EMPTY_USER);
+        else return user.get();
 
     }
 }

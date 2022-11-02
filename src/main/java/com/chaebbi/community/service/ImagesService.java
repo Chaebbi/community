@@ -6,10 +6,8 @@ import com.chaebbi.community.repository.ImagesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,5 +31,21 @@ public class ImagesService {
 
     public void deleteByPostIdx(Long postIdx) {
         imagesRepository.deleteByPostIdx(postIdx);
+    }
+
+    public Optional<Images> findByIdx(Long imageIdx) { return imagesRepository.findById(imageIdx);
+    }
+
+    public void deleteImage(Long imageIdx) { imagesRepository.deleteById(imageIdx);    }
+
+    public void update(Images targetImage, String updateImgUrl, int updateImgRank) {
+        targetImage.setImgUrl(updateImgUrl);
+        targetImage.setImgRank(updateImgRank);
+
+        imagesRepository.save(targetImage);
+    }
+
+    public List<Images> findByPostIdx(Long postIdx) {
+        return imagesRepository.findByPostIdx(postIdx);
     }
 }
