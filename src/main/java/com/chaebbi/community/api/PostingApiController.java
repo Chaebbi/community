@@ -7,6 +7,7 @@ import com.chaebbi.community.domain.Images;
 import com.chaebbi.community.domain.Posting;
 import com.chaebbi.community.dto.request.PostingDto;
 import com.chaebbi.community.dto.request.UpdatePostDto;
+import com.chaebbi.community.dto.response.CheckMyPostsDto;
 import com.chaebbi.community.dto.response.CommentsListDto;
 import com.chaebbi.community.dto.response.ImagesListDto;
 import com.chaebbi.community.dto.response.PostDetailDto;
@@ -139,7 +140,7 @@ public class PostingApiController {
     public ResponseEntity<PostDetailDto> detailPost(@PathVariable (value = "userIdx") Long userIdx,
                                                     @PathVariable (value = "postIdx") Long postIdx
                                                     ) {
-        log.info("Post 31-3 /posting/update/{userIdx}/{postIdx}");
+        log.info("Post 31-5 /post/{userIdx}/{postIdx}");
 
         CommunityUser user = userValidationController.validateuser(userIdx);
         Posting post = postValidationController.validationPostExist(postIdx);
@@ -155,6 +156,17 @@ public class PostingApiController {
     /**
      * [Get] 31-6 내가 쓴 게시글 조회 API
      * */
+    @ApiOperation(value = "[GET] 내가 쓴 게시글 조회  ", notes = "user id로 내가 쓴 게시글들을 조회 합니다.")
+    @GetMapping("/mypost/{userIdx}")
+    public ResponseEntity<CheckMyPostsDto> checkMyPosts(@PathVariable (value = "userIdx") Long userIdx) {
+        log.info("Post 31-6 /mypost/{userIdx}");
+        userValidationController.validateuser(userIdx);
+
+        CheckMyPostsDto checkMyPostsDto =postingService.checkMyPosts(userIdx);
+
+
+        return ResponseEntity.ok().body(checkMyPostsDto);
+    }
 
 
 

@@ -4,9 +4,7 @@ import com.chaebbi.community.domain.CommunityUser;
 import com.chaebbi.community.domain.Images;
 import com.chaebbi.community.domain.Posting;
 import com.chaebbi.community.dto.request.UpdatePostDto;
-import com.chaebbi.community.dto.response.CommentsListDto;
-import com.chaebbi.community.dto.response.ImagesListDto;
-import com.chaebbi.community.dto.response.PostDetailDto;
+import com.chaebbi.community.dto.response.*;
 import com.chaebbi.community.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -92,4 +90,23 @@ public class PostingService {
 
     }
 
+    public CheckMyPostsDto checkMyPosts(Long userIdx) {
+        CheckMyPostsDto checkMyPosts = new CheckMyPostsDto();
+        Long postsCount = getPostsCount(userIdx);
+        checkMyPosts.setPostCount(postsCount);
+        if(postsCount > 0) {
+            List<Posting> postings = postingRepository.findAllByUserIdx(userIdx);
+            List<PostsListDto> postsLists = postings.stream()
+                    .map(m-> new PostsListDto(m.getTitle(), m.getContent(), new SimpleDateFormat("yyyy.MM.dd HH:mm").format(m.getCreatedAt())))
+                    .collect(Collectors.toList());
+            checkMyPosts.setPostsLists(postsLists);
+
+        } else checkMyPosts.setPostsLists(null);
+
+        return checkMyPosts;
+
+
+    }
+
+    public Long getPostsCount(Long userIdx) { return postingRepository.countByUserIdx(userIdx);}
 }
