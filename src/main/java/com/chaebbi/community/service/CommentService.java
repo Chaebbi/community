@@ -1,6 +1,7 @@
 package com.chaebbi.community.service;
 
 import com.chaebbi.community.domain.Comment;
+import com.chaebbi.community.dto.response.CommentsListDto;
 import com.chaebbi.community.repository.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,5 +33,11 @@ public class CommentService {
 
     public List<Comment> getComment(int userIdx) {
         return commentRepository.getComment(userIdx);
+    }
+
+    public Long getCommentCnt(Long postIdx) { return commentRepository.getCommentCnt(postIdx.intValue()); }
+
+    public List<CommentsListDto> getCommentList(Long postIdx) {
+        return commentRepository.getCommentList(postIdx);
     }
 }
