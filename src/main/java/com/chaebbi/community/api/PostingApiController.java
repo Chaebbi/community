@@ -49,7 +49,7 @@ public class PostingApiController {
                                            @ApiParam(value = "게시글 제목과 내용 dto") @RequestPart(value="posting") PostingDto postingDto ) throws IOException {
 
         log.info("POST 31-1 /posting/{userIdx}");
-        //validation 로직
+
         userValidationController.validateuser(userIdx);
         postValidationController.validationPost(postingDto.getContent(), postingDto.getTitle());
 
@@ -85,7 +85,7 @@ public class PostingApiController {
                                            @PathVariable (value = "postIdx") Long postIdx
                                            ){
         log.info("Delete 31-2 /posting/{userIdx}/{postIdx}");
-        //validation 로직
+
         userValidationController.validateuser(userIdx);
         postValidationController.validateDeletePost(postIdx);
 

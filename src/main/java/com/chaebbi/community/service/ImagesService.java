@@ -34,4 +34,9 @@ public class ImagesService {
     public void deleteByPostIdx(Long postIdx) {
         imagesRepository.deleteByPostIdx(postIdx);
     }
+
+    public Optional<Images> findByIdx(Long imageIdx) { return imagesRepository.findById(imageIdx);
+    }
+
+    public void deleteImage(Long imageIdx) { imagesRepository.deleteById(imageIdx);    }
 }
