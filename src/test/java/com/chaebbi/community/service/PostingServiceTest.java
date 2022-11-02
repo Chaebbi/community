@@ -1,6 +1,7 @@
 package com.chaebbi.community.service;
 
 import com.chaebbi.community.domain.*;
+import com.chaebbi.community.dto.response.CheckMyPostsDto;
 import com.chaebbi.community.dto.response.PostDetailDto;
 import com.chaebbi.community.repository.PostingRepository;
 import org.junit.jupiter.api.Test;
@@ -132,6 +133,35 @@ class PostingServiceTest {
         assertEquals(1, postDetailDto.getThumbupCount());
         // 댓글의 수가 1개가 맞는가
         assertEquals(1, postDetailDto.getCommentCount());
+
+
+    }
+    @Test
+    void 내_게시글_조회() {
+        // user Kim 생성
+        CommunityUser user1 = new CommunityUser();
+        user1.setNickname("dr.김");
+        user1.setIdx(333L);
+        user1.setUserIdx(13L);
+        CommunityUser userK = userService.save(user1);
+
+        //Kim이 게시글 생성
+        Posting createPost = postingService.create(userK.getUserIdx(), "new post", "new post title by Kim");
+        Posting savedPost1 =postingService.save(createPost);    // 포스트 저장
+
+        Posting createPost2 = postingService.create(userK.getUserIdx(), "new post2", "2nd new post title by Kim");
+        Posting savedPost2 =postingService.save(createPost2);
+
+        CheckMyPostsDto checkMyPostsDto = postingService.checkMyPosts(userK.getUserIdx());
+
+        // 게시글의 수가 2개인가
+        assertEquals(2, checkMyPostsDto.getPostCount());
+        // 게시글의 제목과 내용이 맞는가
+        assertEquals(savedPost1.getTitle(), checkMyPostsDto.getPostsLists().get(0).getTitle());
+        assertEquals(savedPost1.getContent(), checkMyPostsDto.getPostsLists().get(0).getContent());
+
+        assertEquals(savedPost2.getTitle(), checkMyPostsDto.getPostsLists().get(1).getTitle());
+        assertEquals(savedPost2.getContent(), checkMyPostsDto.getPostsLists().get(1).getContent());
 
 
     }
