@@ -7,5 +7,6 @@ import java.util.Optional;
 public interface ThumbupRepositoryCustom {
     void deleteThumbup(int userIdx, int postIdx);
     Long checkThumbup(int userIdx, int postIdx);
+    Long getThumbupCount(int postIdx);
 
 }

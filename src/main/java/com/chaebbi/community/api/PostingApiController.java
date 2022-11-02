@@ -145,39 +145,7 @@ public class PostingApiController {
         Posting post = postValidationController.validationPostExist(postIdx);
         List<Images> imageList = imagesService.findByPostIdx(postIdx);
 
-        PostDetailDto postDetailDto = new PostDetailDto();
-        postDetailDto.setPostIdx(post.getIdx());
-        postDetailDto.setTitle(post.getTitle());
-        postDetailDto.setContent(post.getContent());
-        postDetailDto.setNickname(user.getNickname());
-        postDetailDto.setCreatedAt(new SimpleDateFormat("yyyy.MM.dd HH:mm").format(post.getCreatedAt()));
-        postDetailDto.setImagesCount(imageList.size());
-
-        if(imageList.size() != 0) {
-           List<ImagesListDto> dtoList = imageList.stream()
-                   .map(m -> new ImagesListDto(m.getImgUrl(), m.getImgRank()))
-                   .collect(Collectors.toList());
-            postDetailDto.setImagesLists(dtoList);
-
-        }
-        else postDetailDto.setImagesLists(null);
-
-        Long thumbupCnt = thumbupService.checkThumbup(userIdx.intValue(),postIdx.intValue());
-        postDetailDto.setThumbupCount(thumbupCnt);
-        Long commentCount = commentService.getCommentCnt(postIdx);
-        postDetailDto.setCommentCount(commentCount);
-
-        if(commentCount >0) {
-            List<CommentsListDto> comments = commentService.getCommentList(postIdx);
-            postDetailDto.setCommentsLists(comments);
-
-        } else postDetailDto.setCommentsLists(null);
-
-
-
-
-
-
+        PostDetailDto postDetailDto = postingService.detailPost(postIdx, post, imageList);
 
 
         return ResponseEntity.ok().body(postDetailDto);

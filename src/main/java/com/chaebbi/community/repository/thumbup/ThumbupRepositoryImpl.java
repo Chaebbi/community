@@ -26,5 +26,13 @@ public class ThumbupRepositoryImpl implements ThumbupRepositoryCustom {
                 .getSingleResult();
     }
 
+    @Override
+    public Long getThumbupCount(int postIdx){
+        return (Long) em.createQuery("select count(th.idx) from Thumbup th where th.postIdx = :postIdx")
+                .setParameter("postIdx", postIdx)
+                .getSingleResult();
+    }
+
+
 
 }

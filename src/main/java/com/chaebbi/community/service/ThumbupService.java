@@ -30,4 +30,7 @@ public class ThumbupService {
     }
 
 
+    public Long getThumbupCount(int postIdx) {
+        return thumbupRepository.getThumbupCount(postIdx);
+    }
 }
