@@ -4,6 +4,7 @@ import com.chaebbi.community.aws.S3Uploader;
 import com.chaebbi.community.domain.Images;
 import com.chaebbi.community.domain.Posting;
 import com.chaebbi.community.dto.request.PostingDto;
+import com.chaebbi.community.dto.request.UpdatePostDto;
 import com.chaebbi.community.exception.ExceptionController;
 import com.chaebbi.community.exception.chaebbiException;
 import com.chaebbi.community.service.ImagesService;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static com.chaebbi.community.exception.CodeAndMessage.*;
 
@@ -49,7 +51,7 @@ public class PostingApiController {
         log.info("POST 31-1 /posting/{userIdx}");
         //validation 로직
         userValidationController.validateuser(userIdx);
-        postValidationController.validationPost(postingDto);
+        postValidationController.validationPost(postingDto.getContent(), postingDto.getTitle());
 
         Posting post = new Posting();
         post = postingService.create(userIdx, postingDto.getContent(), postingDto.getTitle());
@@ -76,7 +78,6 @@ public class PostingApiController {
 
     /**
      * [Delete] 31-2 게시글 삭제 API
-     *
      */
     @ApiOperation(value = "[POST] 31-2 게시글 삭제 ", notes = "게시글 id로 게시글을 삭제합니다")
     @DeleteMapping ("/{userIdx}/{postIdx}")
@@ -92,6 +93,39 @@ public class PostingApiController {
 
         return ResponseEntity.ok().build();
     }
+
+
+
+    /**
+     * [Post] 31-3 게시글 수정 API
+     * */
+    @ApiOperation(value = "[POST] 31-3 게시글 수정 ", notes = "게시글 id로 게시글의 제목과 내용을 수정합니다.")
+    @PostMapping("/update/{userIdx}/{postIdx}")
+    public ResponseEntity<Void> updatePost(@PathVariable (value = "userIdx") Long userIdx,
+                                           @PathVariable (value = "postIdx") Long postIdx,
+                                           @ApiParam(value = "수정할 게시글 제목과 내용 dto") @RequestBody UpdatePostDto updatePostDto) {
+        log.info("Post 31-3 /posting/update/{userIdx}/{postIdx}");
+        //valudation 로직
+        userValidationController.validateuser(userIdx);
+        postValidationController.validationPost(updatePostDto.getContent(), updatePostDto.getTitle());
+        Posting targetPost = postValidationController.validationPostExist(postIdx);
+
+        postingService.update(targetPost, updatePostDto.getContent(), updatePostDto.getTitle());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * [Get] 31-4 게시글 전체  목록 조회 API
+     * */
+
+    /**
+     * [Get] 31-5 게시글 상세 1개 조회 API
+     * */
+
+    /**
+     * [Get] 31-6 내가 쓴 게시글 조회 API
+     * */
 
 
 

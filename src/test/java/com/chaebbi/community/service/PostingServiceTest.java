@@ -60,4 +60,26 @@ class PostingServiceTest {
         assertEquals(delPost, Optional.<Posting>empty());
 
     }
+
+    @Test
+    void 포스트수정() {
+        CommunityUser user = new CommunityUser();
+        String nickname = "dr.김";
+        user.setNickname(nickname);
+        user.setIdx(13L);
+        CommunityUser userT = userService.save(user);
+
+        Posting createPost = postingService.create(userT.getIdx(), "new post", "new post title");
+        Posting savedPost =postingService.save(createPost);    // 포스트 저장
+
+        //수정 내역 발생
+        String updateContent = "update Content";
+        String updateTitle = "update Title";
+        Posting newPost = postingService.update(savedPost, updateContent, updateTitle);
+
+        assertEquals(newPost.getTitle(), updateTitle);
+        assertEquals(newPost.getContent(), updateContent);
+
+
+    }
 }

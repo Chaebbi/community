@@ -1,6 +1,7 @@
 package com.chaebbi.community.service;
 
 import com.chaebbi.community.domain.Posting;
+import com.chaebbi.community.dto.request.UpdatePostDto;
 import com.chaebbi.community.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,4 +33,16 @@ public class PostingService {
         imagesService.deleteByPostIdx(postIdx);
         postingRepository.deleteByIdx(postIdx);
     }
+
+    public Posting update(Posting post, String content, String title) {
+        Long postIdx = post.getIdx();
+        post.setContent(content);
+        post.setTitle(title);
+        post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+        postingRepository.save(post);
+        return post;
+
+    }
+
 }
