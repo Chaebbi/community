@@ -39,4 +39,11 @@ public class ImagesService {
     }
 
     public void deleteImage(Long imageIdx) { imagesRepository.deleteById(imageIdx);    }
+
+    public void update(Images targetImage, String updateImgUrl, int updateImgRank) {
+        targetImage.setImgUrl(updateImgUrl);
+        targetImage.setImgRank(updateImgRank);
+
+        imagesRepository.save(targetImage);
+    }
 }

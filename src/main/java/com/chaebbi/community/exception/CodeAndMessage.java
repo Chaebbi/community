@@ -18,6 +18,7 @@ public enum CodeAndMessage {
 
     // 이미지 관련 1200 ~
     NO_MATCHING_IMAGES("1200", "imagesIdx에 해당하는 것이 없습니다."),
+    EMPTY_MULTIPARTFILE("1201", "이미지 파일이 비었습니다"),
 
     // 댓글 관련 1300 ~
     COMMENT_NO_CONTENT("1300", "댓글 내용이 비어있습니다."),
