@@ -1,20 +1,15 @@
 package com.chaebbi.community.api;
 
 import com.chaebbi.community.aws.S3Uploader;
-import com.chaebbi.community.domain.Comment;
 import com.chaebbi.community.domain.CommunityUser;
 import com.chaebbi.community.domain.Images;
 import com.chaebbi.community.domain.Posting;
 import com.chaebbi.community.dto.request.PostingDto;
 import com.chaebbi.community.dto.request.UpdatePostDto;
+import com.chaebbi.community.dto.response.AllPostsListDto;
 import com.chaebbi.community.dto.response.CheckMyPostsDto;
-import com.chaebbi.community.dto.response.CommentsListDto;
-import com.chaebbi.community.dto.response.ImagesListDto;
 import com.chaebbi.community.dto.response.PostDetailDto;
-import com.chaebbi.community.exception.ExceptionController;
-import com.chaebbi.community.exception.chaebbiException;
 import com.chaebbi.community.service.*;
-import com.chaebbi.community.validation.ImageValidationController;
 import com.chaebbi.community.validation.PostValidationController;
 import com.chaebbi.community.validation.UserValidationController;
 import io.swagger.annotations.Api;
@@ -22,21 +17,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static com.chaebbi.community.exception.CodeAndMessage.*;
 
 @Slf4j
 @Api(tags = "Posting API", description = "게시글 API")
@@ -49,9 +36,6 @@ public class PostingApiController {
     private final S3Uploader s3Uploader;
     private final UserValidationController userValidationController;
     private final PostValidationController postValidationController;
-    private final ThumbupService thumbupService;
-    private final CommentService commentService;
-    private final CommunityUserService userService;
     /**
      * [Post] 31-1 게시글 작성 API
      */
@@ -131,6 +115,19 @@ public class PostingApiController {
     /**
      * [Get] 31-4 게시글 전체  목록 조회 API
      * */
+    @ApiOperation(value = "[GET] 31-4 게시글 전체  목록 조회  ", notes = "전체 게시글 목록을 조회 합니다.")
+    @GetMapping("/allposts/{userIdx}")
+    public ResponseEntity<AllPostsListDto> allPostsList(@PathVariable (value = "userIdx") Long userIdx){
+
+        log.info("Get 31-4 /allposts/{userIdx}");
+
+        CommunityUser user = userValidationController.validateuser(userIdx);
+
+        AllPostsListDto allPostsListDto = postingService.allPostsList(user);
+        return ResponseEntity.ok().body(allPostsListDto);
+
+    }
+
 
     /**
      * [Get] 31-5 게시글 상세 1개 조회 API
@@ -140,7 +137,7 @@ public class PostingApiController {
     public ResponseEntity<PostDetailDto> detailPost(@PathVariable (value = "userIdx") Long userIdx,
                                                     @PathVariable (value = "postIdx") Long postIdx
                                                     ) {
-        log.info("Post 31-5 /post/{userIdx}/{postIdx}");
+        log.info("Get 31-5 /post/{userIdx}/{postIdx}");
 
         CommunityUser user = userValidationController.validateuser(userIdx);
         Posting post = postValidationController.validationPostExist(postIdx);

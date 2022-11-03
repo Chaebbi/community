@@ -3,7 +3,6 @@ package com.chaebbi.community.service;
 import com.chaebbi.community.domain.CommunityUser;
 import com.chaebbi.community.domain.Images;
 import com.chaebbi.community.domain.Posting;
-import com.chaebbi.community.dto.request.UpdatePostDto;
 import com.chaebbi.community.dto.response.*;
 import com.chaebbi.community.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -97,7 +97,7 @@ public class PostingService {
         if(postsCount > 0) {
             List<Posting> postings = postingRepository.findAllByUserIdx(userIdx);
             List<PostsListDto> postsLists = postings.stream()
-                    .map(m-> new PostsListDto(m.getTitle(), m.getContent(), new SimpleDateFormat("yyyy.MM.dd HH:mm").format(m.getCreatedAt())))
+                    .map(m-> new PostsListDto(m.getIdx(), m.getTitle(), m.getContent(), new SimpleDateFormat("yyyy.MM.dd HH:mm").format(m.getCreatedAt())))
                     .collect(Collectors.toList());
             checkMyPosts.setPostsLists(postsLists);
 
@@ -109,4 +109,52 @@ public class PostingService {
     }
 
     public Long getPostsCount(Long userIdx) { return postingRepository.countByUserIdx(userIdx);}
+
+    public Long getAllPostCount() {
+        return postingRepository.count();
+    }
+
+    public List<Posting> getAllPosts() {
+        return postingRepository.findAll();
+    }
+
+    public AllPostsListDto allPostsList(CommunityUser user) {
+        AllPostsListDto allPostsListDto = new AllPostsListDto();
+        allPostsListDto.setNickname(user.getNickname());
+        Long postsCount = getAllPostCount();
+        allPostsListDto.setPostCount(postsCount);
+        if (postsCount == 0) {
+            allPostsListDto.setAllPostsLists(null);
+            return allPostsListDto;
+        } else {
+            List<Posting> postingList = getAllPosts();
+            List<AllPostsLists> allPostsLists = new ArrayList<>();
+            for (Posting post : postingList) {
+                AllPostsLists postsLists = new AllPostsLists();
+                postsLists.setPostIdx(post.getIdx());
+                postsLists.setTitle(post.getTitle());
+                postsLists.setContent(post.getContent());
+
+                Optional<CommunityUser> writer = userService.findByUserIdx(post.getUserIdx());
+                postsLists.setNickname(writer.get().getNickname());
+
+                postsLists.setCreatedAt(new SimpleDateFormat("yyyy.MM.dd HH:mm").format(post.getCreatedAt()));
+
+                Long thumbupCount = thumbupService.getThumbupCount(post.getIdx().intValue());
+                Long commentCount = commentService.getCommentCnt(post.getIdx());
+
+                postsLists.setThumbupCount(thumbupCount);
+                postsLists.setCommentCount(commentCount);
+                if( 0 < imagesService.findByPostIdx(post.getIdx()).size()) {
+                    String frstImgUrl = imagesService.getFrstImg(post.getIdx());
+                    postsLists.setFrstImgUrl(frstImgUrl);
+                } else postsLists.setFrstImgUrl(null);
+                allPostsLists.add(postsLists);
+
+            }
+            allPostsListDto.setAllPostsLists(allPostsLists);
+
+        }
+        return allPostsListDto;
+    }
 }

@@ -48,4 +48,9 @@ public class ImagesService {
     public List<Images> findByPostIdx(Long postIdx) {
         return imagesRepository.findByPostIdx(postIdx);
     }
+
+    public String getFrstImg(Long postIdx) {
+        List<Images> images= imagesRepository.findByPostIdx(postIdx);
+        return images.get(0).getImgUrl();
+    }
 }
