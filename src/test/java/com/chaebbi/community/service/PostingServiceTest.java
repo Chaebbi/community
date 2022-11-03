@@ -1,6 +1,7 @@
 package com.chaebbi.community.service;
 
 import com.chaebbi.community.domain.*;
+import com.chaebbi.community.dto.response.AllPostsListDto;
 import com.chaebbi.community.dto.response.CheckMyPostsDto;
 import com.chaebbi.community.dto.response.PostDetailDto;
 import com.chaebbi.community.repository.PostingRepository;
@@ -145,6 +146,7 @@ class PostingServiceTest {
         user1.setUserIdx(13L);
         CommunityUser userK = userService.save(user1);
 
+
         //Kim이 게시글 생성
         Posting createPost = postingService.create(userK.getUserIdx(), "new post", "new post title by Kim");
         Posting savedPost1 =postingService.save(createPost);    // 포스트 저장
@@ -163,6 +165,64 @@ class PostingServiceTest {
         assertEquals(savedPost2.getTitle(), checkMyPostsDto.getPostsLists().get(1).getTitle());
         assertEquals(savedPost2.getContent(), checkMyPostsDto.getPostsLists().get(1).getContent());
 
+
+    }
+
+    @Test
+    void 전체_게시글_조회() {
+        // user Kim, Choi 생성
+        CommunityUser user1 = new CommunityUser();
+        user1.setNickname("dr.김");
+        user1.setIdx(333L);
+        user1.setUserIdx(13L);
+        CommunityUser userK = userService.save(user1);
+        CommunityUser user2 = new CommunityUser();
+        user2.setNickname("dr.최");
+        user2.setIdx(444L);
+        user2.setUserIdx(14L);
+        CommunityUser userC = userService.save(user2);
+
+
+        // 게시글 3개 생성
+        Posting createPost1 = postingService.create(userK.getUserIdx(), "new post", "new post title by Kim");
+        Posting savedPost1 =postingService.save(createPost1);    // 포스트 저장
+        Posting createPost2 = postingService.create(userK.getUserIdx(), "new post2", "2nd new post title by Kim");
+        Posting savedPost2 =postingService.save(createPost2);
+        Posting createPost3 = postingService.create(userK.getUserIdx(), "new post3", "2nd new post title by Kim");
+        Posting savedPost3 =postingService.save(createPost3);
+
+        // 따봉과 댓글
+        Comment comment = new Comment();
+        comment.setUserIdx(userC.getUserIdx().intValue());
+        comment.setPostIdx(savedPost1.getIdx().intValue());
+        comment.setContent("안녕하세요! 김선생님 최입니다.");
+        comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        commentService.createComment(comment);
+
+        Comment recomment = new Comment();
+        recomment.setUserIdx(userK.getUserIdx().intValue());
+        recomment.setPostIdx(savedPost1.getIdx().intValue());
+        recomment.setContent("안녕하세요! 최선생님 반가워요.");
+        recomment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        commentService.createComment(recomment);
+
+        thumbupService.createThumbup(Thumbup.createThumbup(userC.getIdx().intValue(), savedPost1.getIdx().intValue()));
+        thumbupService.createThumbup(Thumbup.createThumbup(userC.getIdx().intValue(), savedPost2.getIdx().intValue()));
+        thumbupService.createThumbup(Thumbup.createThumbup(userC.getIdx().intValue(), savedPost3.getIdx().intValue()));
+
+        AllPostsListDto allPostsListDto = postingService.allPostsList(userK);
+        // 접속한 사용자 닉네임이 Kim이 맞는가
+        assertEquals(userK.getNickname(), allPostsListDto.getNickname());
+
+        // 게시글 따봉수,댓글수가 맞는가
+        assertEquals(2, allPostsListDto.getAllPostsLists().get(0).getCommentCount());
+        assertEquals(1, allPostsListDto.getAllPostsLists().get(0).getThumbupCount());
+
+        assertEquals(0, allPostsListDto.getAllPostsLists().get(1).getCommentCount());
+        assertEquals(1, allPostsListDto.getAllPostsLists().get(1).getThumbupCount());
+
+        assertEquals(0, allPostsListDto.getAllPostsLists().get(2).getCommentCount());
+        assertEquals(1, allPostsListDto.getAllPostsLists().get(2).getThumbupCount());
 
     }
 }

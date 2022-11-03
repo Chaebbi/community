@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PostsListDto {
+    @ApiModelProperty(value = "게시글 idx")
+    private Long postIdx;
     @ApiModelProperty(value = "게시글 제목")
     private String title;
     @ApiModelProperty(value = "게시글 내용")
