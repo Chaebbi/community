@@ -6,7 +6,9 @@ import com.chaebbi.community.repository.ImagesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,5 +54,21 @@ public class ImagesService {
     public String getFrstImg(Long postIdx) {
         List<Images> images= imagesRepository.findByPostIdx(postIdx);
         return images.get(0).getImgUrl();
+    }
+    public void uploadImages(Long postIdx, List<MultipartFile> multipartFileList) throws IOException {
+        int img_rank = 1;
+
+        for(int i = 0; i < multipartFileList.size(); i++) {
+            MultipartFile multipartFile = multipartFileList.get(i);
+            String img_url = "empty";
+            if(multipartFile != null) {
+                if(!multipartFile.isEmpty()) {
+                    img_url = s3Uploader.upload(multipartFile, "static");
+                    Images images = create(postIdx, img_url, img_rank);
+                    save(images);
+                    img_rank++;
+                }
+            }
+        }
     }
 }
