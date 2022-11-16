@@ -7,7 +7,6 @@ import com.chaebbi.community.domain.Posting;
 import com.chaebbi.community.dto.request.UpdatePostDto;
 import com.chaebbi.community.dto.response.AllPostsListDto;
 import com.chaebbi.community.dto.response.CheckMyPostsDto;
-import com.chaebbi.community.dto.response.DeletePostResDto;
 import com.chaebbi.community.dto.response.PostDetailDto;
 import com.chaebbi.community.service.*;
 import com.chaebbi.community.validation.PostValidationController;
@@ -71,7 +70,7 @@ public class PostingApiController {
      */
     @ApiOperation(value = "[POST] 31-2 게시글 삭제 ", notes = "게시글 id로 게시글을 삭제합니다")
     @DeleteMapping ("/{userIdx}/{postIdx}")
-    public ResponseEntity<?> deletePost(@PathVariable (value = "userIdx") Long userIdx,
+    public ResponseEntity<Void> deletePost(@PathVariable (value = "userIdx") Long userIdx,
                                            @PathVariable (value = "postIdx") Long postIdx
                                            ){
         log.info("Delete 31-2 /posting/{userIdx}/{postIdx}");
@@ -81,7 +80,7 @@ public class PostingApiController {
 
         postingService.deletePost(postIdx);
 
-        return ResponseEntity.ok().body(new DeletePostResDto(userIdx));
+        return ResponseEntity.ok().build();
     }
 
 
