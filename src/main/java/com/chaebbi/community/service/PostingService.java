@@ -65,6 +65,7 @@ public class PostingService {
 
         String nickname = user.getNickname();
         postDetailDto.setNickname(nickname);
+        postDetailDto.setUserIdx(user.getUserIdx());
         postDetailDto.setCreatedAt(new SimpleDateFormat("yyyy.MM.dd HH:mm").format(post.getCreatedAt()));
         postDetailDto.setImagesCount(imageList.size());
         if(imageList.size() != 0) {
