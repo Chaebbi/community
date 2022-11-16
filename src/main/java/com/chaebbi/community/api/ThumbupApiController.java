@@ -3,6 +3,7 @@ package com.chaebbi.community.api;
 import com.chaebbi.community.domain.Thumbup;
 import com.chaebbi.community.dto.request.DeleteThumbupReqDto;
 import com.chaebbi.community.dto.request.PostThumbupReqDto;
+import com.chaebbi.community.dto.response.GetCheckThumbupResDto;
 import com.chaebbi.community.dto.response.PostThumbupResDto;
 import com.chaebbi.community.dto.response.StringResponseDto;
 import com.chaebbi.community.service.ThumbupService;
@@ -35,6 +36,11 @@ public class ThumbupApiController {
         userValidationController.validateuser((long) userIdx);
         thumbupValidationController.validatePost(request.getPostIdx());
 
+        Long check = thumbupService.checkThumbup(userIdx, request.getPostIdx());
+        if(check != 0) {
+            thumbupService.deleteThumbup(userIdx, request.getPostIdx());
+        }
+
         Thumbup thumbup = Thumbup.createThumbup(userIdx, request.getPostIdx());
         int thumbupIdx = thumbupService.createThumbup(thumbup);
         return ResponseEntity.ok().body(new PostThumbupResDto(thumbupIdx));
@@ -54,5 +60,27 @@ public class ThumbupApiController {
 
         thumbupService.deleteThumbup(userIdx, request.getPostIdx());
         return ResponseEntity.ok().body(new StringResponseDto("삭제되었습니다."));
+    }
+
+    /**
+     * [Get] 41-3 좋아요 확인
+     */
+    @ApiOperation(value = "[GET] 41-3 좋아요 확인 ", notes = "userIdx와 postIdx를 넣어 사용자가 좋아요 했는지 확인합니다")
+    @GetMapping("/{userIdx}/{postIdx}")
+    public ResponseEntity<?> checkThumbup(@PathVariable(value = "userIdx", required = false) int userIdx,
+                                          @PathVariable(value = "postIdx", required = false) int postIdx) {
+        //validation 로직
+        userValidationController.validateuser((long) userIdx);
+        thumbupValidationController.validatePost(postIdx);
+
+        int isThumbup = 0;
+        Long count = thumbupService.checkThumbup(userIdx, postIdx);
+        if(count == 0) {
+            isThumbup = 0;
+        } else if(count > 0) {
+            isThumbup = 1;
+        }
+
+        return ResponseEntity.ok().body(new GetCheckThumbupResDto(isThumbup));
     }
 }
