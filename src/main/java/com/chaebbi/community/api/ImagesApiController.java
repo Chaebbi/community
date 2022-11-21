@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,11 +53,11 @@ public class ImagesApiController {
      * [Post] 32-1 게시글 이미지 수정 API
      * */
     @ApiOperation(value = "[POST] 32-2 게시글 이미지 수정 API", notes = "게시글의 수정할 이미지 id와 이미지순서, 이미지 파일을 입력해 교체")
-    @PostMapping("/{userIdx}/{imageIdx}")
+    @PostMapping(value ="/{userIdx}/{imageIdx}" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateImage(@PathVariable (value = "userIdx") Long userIdx,
                                             @PathVariable (value = "imageIdx") Long imageIdx,
-                                            @ApiParam(value = "교체할 이미지파일 ") @RequestPart(value = "multipartFile")MultipartFile multipartFile,
-                                            @ApiParam(value = "교체할 이미지파일의 순서 ")@RequestPart(value = "imgRank") int imgRank
+                                            @ApiParam(value = "교체할 이미지파일 ")  @RequestParam(value= "multipartFile", required = true) MultipartFile multipartFile,
+                                            @ApiParam(value = "교체할 이미지파일의 순서 ") @RequestParam(value=  "imgRank", required = true) int imgRank
                                             ) throws IOException {
         log.info("Post 32-2 /images/{userIdx}/{imageIdx}");
 
